@@ -56,7 +56,7 @@ battleSchema.statics.search = function(params){
 }
 
 function buildQuery(params){
-    let query = {$or:[]}
+    let query = {$and:[]}
     if(params.name){
         query.name = params.name;
     }
@@ -73,10 +73,15 @@ function buildQuery(params){
     }
     if(params.battle_number){
         query.battle_number = Number(params.battle_number);
+        
     }
     if(params.king){
-        query.$or.push({attacker_king:{$regex:escape(params.king), $options: '-i'}});
-        query.$or.push({defender_king:{$regex:escape(params.king), $options: '-i'}});
+        query.$and.push({$or:[
+            {attacker_king:{$regex:escape(params.king), $options: '-i'}},
+            {defender_king:{$regex:escape(params.king), $options: '-i'}}
+        ]})
+        // query.$or.push();
+        // query.$or.push();
     }
     if(params.attacker_king){
         query.attacker_king = {$regex:escape(params.attacker_king), $options: '-i'}
@@ -85,16 +90,24 @@ function buildQuery(params){
         query.defender_king = {$regex:escape(params.defender_king), $options: '-i'}
     }
     if(params.attacker){
-        query.$or.push({attacker_1:{$regex:escape(params.attacker), $options: '-i'}});
-        query.$or.push({attacker_2:{$regex:escape(params.attacker), $options: '-i'}});
-        query.$or.push({attacker_3:{$regex:escape(params.attacker), $options: '-i'}});
-        query.$or.push({attacker_4:{$regex:escape(params.attacker), $options: '-i'}});
+        query.$and.push({$or:[
+            {attacker_1:{$regex:escape(params.attacker), $options: '-i'}},
+            {attacker_2:{$regex:escape(params.attacker), $options: '-i'}},
+            {attacker_3:{$regex:escape(params.attacker), $options: '-i'}},
+            {attacker_4:{$regex:escape(params.attacker), $options: '-i'}}
+        ]});
+        
+        // query.$or.push();
+        // query.$or.push();
+        // query.$or.push();
     }
     if(params.defender){
-        query.$or.push({defender_1:{$regex:escape(params.defender), $options: '-i'}});
-        query.$or.push({defender_2:{$regex:escape(params.defender), $options: '-i'}});
-        query.$or.push({defender_3:{$regex:escape(params.defender), $options: '-i'}});
-        query.$or.push({defender_4:{$regex:escape(params.defender), $options: '-i'}});
+        query.$and.push({$or:[
+            {defender_1:{$regex:escape(params.defender), $options: '-i'}},
+            {defender_2:{$regex:escape(params.defender), $options: '-i'}},
+            {defender_3:{$regex:escape(params.defender), $options: '-i'}},
+            {defender_4:{$regex:escape(params.defender), $options: '-i'}},
+        ]});
     }
     if(params.attacker_outcome){
         query.attacker_outcome = params.attacker_outcome;
@@ -136,8 +149,8 @@ function buildQuery(params){
     if(params.note){
         query.note = {$regex:escape(params.note),  $options: '-i'};
     }
-    if(!query.$or.length){
-        delete query.$or;
+    if(!query.$and.length){
+        delete query.$and;
     }
     
     return query;
