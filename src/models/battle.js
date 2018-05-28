@@ -49,8 +49,6 @@ battleSchema.statics.averageFieldValue = function(name){
     } )
 }
 
-
-
 battleSchema.statics.search = function(params){
     return this.find(buildQuery(params)).exec();
 }
@@ -79,9 +77,7 @@ function buildQuery(params){
         query.$and.push({$or:[
             {attacker_king:{$regex:escape(params.king), $options: '-i'}},
             {defender_king:{$regex:escape(params.king), $options: '-i'}}
-        ]})
-        // query.$or.push();
-        // query.$or.push();
+        ]});
     }
     if(params.attacker_king){
         query.attacker_king = {$regex:escape(params.attacker_king), $options: '-i'}
@@ -96,10 +92,6 @@ function buildQuery(params){
             {attacker_3:{$regex:escape(params.attacker), $options: '-i'}},
             {attacker_4:{$regex:escape(params.attacker), $options: '-i'}}
         ]});
-        
-        // query.$or.push();
-        // query.$or.push();
-        // query.$or.push();
     }
     if(params.defender){
         query.$and.push({$or:[
